@@ -2,7 +2,7 @@
 <title> FTIT17 - Wetterstation Übermittlung</title>
 <body>
 <?php
-	foreach($_GET as $key 0> $value){
+	foreach($_GET as $key => $value){
 		echo $key . ' : ' . $value;
 	}
 	
