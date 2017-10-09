@@ -1,6 +1,7 @@
 <html>
 <title> FTIT17 - Wetterstation Übermittlung</title>
 <body>
+<h1>FTIT17 - Wetterstation Übermittlung</h1>
 <?php
 	foreach($_GET as $key => $value){
 		echo $key . ' : ' . $value;
