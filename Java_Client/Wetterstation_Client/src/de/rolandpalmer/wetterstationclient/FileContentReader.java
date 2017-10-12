@@ -1,6 +1,7 @@
 package de.rolandpalmer.wetterstationclient;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,24 +10,45 @@ import java.util.List;
 
 public class FileContentReader {
 	
-	String file;
+	File Path;
 	
-	public FileContentReader(String file) {
-		this.file = file;
+	public void setPath(File path) {
+		Path = path;
+	}
+
+	/**
+	 * read a file and return teh content as a string array
+	 * 
+	 * @param file
+	 */
+	public FileContentReader(File path) {
+		this.Path = path;
 	}
 	
+
 	public String ReadFileContent() throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(this.file));
 
 		List<String> arrs = new ArrayList<String>();
-		String line = "";
+		String content=null;
 		
-		while((line=br.readLine()) != null){
-			arrs.add(line);
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(Path));
+	
+			String line = "";
+			
+			while((line=br.readLine()) != null){
+				arrs.add(line);
+				content = content + line;
+			}
+			
+			br.close();
+			
+		}
+		catch(Exception e) {
+			
 		}
 		
-		br.close();
-		
-		return arrs.toString();
+		//return arrs.toString();
+		return content;
 	}
 }
