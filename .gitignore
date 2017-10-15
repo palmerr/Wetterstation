@@ -8,5 +8,7 @@
 *.tii
 *.tis
 *.segments.gen
-*.segmemts_2
-*.segmemts_5
+*.segmemts_*
+*.json
+*.gen
+*.classpath

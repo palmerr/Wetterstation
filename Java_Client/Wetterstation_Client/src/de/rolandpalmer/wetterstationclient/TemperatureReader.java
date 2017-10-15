@@ -24,28 +24,20 @@ public class TemperatureReader extends FileContentReader{
 			if(Path.exists()) {
 				if(Path.isDirectory()) {
 					for(File dir : Path.listFiles()) {
-						//System.out.println(dir.getName());
-						//System.out.println(dir + "\\" + File);
-						
 						File filePath = new File(dir + "\\" + File); 
 						this.setPath(filePath);
 						
 						String content = this.ReadFileContent();
-						//System.out.println("Content: " +content);
-						
-						//Pattern muster = Pattern.compile(".+(YES).+"); / ok
-						Pattern muster = Pattern.compile(".+t=(.+)");
-						Matcher matcher = muster.matcher(content);
+
+						Pattern template = Pattern.compile(".+t=(.+)");
+						Matcher matcher = template.matcher(content);
 						matcher.find();
-						//System.out.println(matcher.matches());
 						
 						String strTemp = matcher.group(1);
-						//System.out.println(strTemp);
 						String sensorID = dir.getName();
 						Double sensorTemp = (Double.valueOf(strTemp))/1000;
 
-						result.add(sensorID);
-						result.add(sensorTemp.toString());
+						result.add(sensorID+":"+sensorTemp.toString());
 					}
 				}
 			}
