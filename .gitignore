@@ -1,1 +1,12 @@
 *.log
+*.fdt
+*.fnm
+*.fdx
+*.frq
+*.nrm
+*.prx
+*.tii
+*.tis
+*.segments.gen
+*.segmemts_2
+*.segmemts_5
