@@ -3,24 +3,34 @@
 # Sie benoetigen einen Cronjob-Eintrag der Form
 # 30 * * * * pi <Pfad zum Script>/weather_data.py
 
-import re, os, urllib2
+import re, os, urllib2, time
 import RPi.GPIO as GPIO
 
 #-----------------------------
 # globale Variablen
 url = ""
 # SensorID Pfad
-w1path = "/home/pi/w1/devices/"
+w1path = "/sys/bus/w1/devices/"
 # Error LED Pin Nummer
 pin_led = 11
+# send url
+url = "http://server?temp={0}&sensorid={1}"
+# mysql
+user = 'pi'
+password = 'pass'
+server = 'localhost'
+database = 'weather'
 #------------------------------
 
 
 # alle angeschlossenen SensorIDs holen
 sensoridList=[]
 for d in os.listdir(w1path):
+	if d == 'w1_bus_master1':
+		continue
         if os.path.isdir(os.path.join(w1path,d)):
                 sensoridList.insert(-1, d)
+		print "Sensor: " + d
 
 def get_temp(path):
         temp = None
@@ -39,11 +49,19 @@ def get_temp(path):
                 GPIO.output(pin_led, GPIO.HIGH)
         return temp
 
-	
-def send_temp(temp):
-        send_url = url % temp
+
+def send_temp(temp, sensorid):
+        send_url = url.format(temp, sensorid)
         try:
-                result = urllib2.urlopen(send_url);
+                #result = urllib2.urlopen(send_url);
+                print send_url
+		f = open('temp.log', 'w')
+		print >> f, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime())
+		print >> f, send_url
+		f.close
+		# sql insert string
+		#
+		#
         except urllib2.HTTPError as error:
                 print error.code, error.reason
                 GPIO.output(pin_led, GPIO.HIGH)
@@ -51,17 +69,15 @@ def send_temp(temp):
 # main Funktion
 if __name__ == '__main__':
 
+	GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(pin_led, GPIO.OUT)
+
         # jeden Sensor abfragen
-        for sensorid in sensoridList:
-                sensoridpath = "~/w1/devices/%s/w1_slave" % sensorid
-                print "Get sensor from: " + sensoridpath
-
-
-                GPIO.setwarnings(False)
-                GPIO.setmode(GPIO.BOARD)
-                GPIO.setup(pin_led, GPIO.OUT)
+       	for sensorid in sensoridList:
+               	sensoridpath = w1path + "/%s/w1_slave" % sensorid
+                #print "Get sensor from: " + sensoridpath
 
                 temp = get_temp(sensoridpath)
-
-                if None != temp:
-                        send_temp(temp)
+		if None != temp:
+               	        send_temp(temp, sensorid)
